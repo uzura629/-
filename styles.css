@@ -1,0 +1,1022 @@
+:root {
+    --primary-color: #2196F3;
+    --secondary-color: #1976D2;
+    --accent-color: #4CAF50;
+    --background-color: #f8f9fa;
+    --card-background: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --border-radius: 12px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+h1, h2 {
+    color: #333;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 10px;
+}
+
+input, select {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+#result {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e7e7e7;
+}
+
+.hidden {
+    display: none;
+}
+
+#savedResults {
+    margin-top: 20px;
+}
+
+#resultsList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#resultsList li {
+    background-color: #f0f0f0;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.deleteButton, .editButton {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-left: 5px;
+}
+
+.editButton {
+    background-color: #4CAF50;
+}
+
+.deleteButton:hover {
+    background-color: #cc0000;
+}
+
+.editButton:hover {
+    background-color: #45a049;
+}
+
+#clearButton {
+    background-color: #ff4444;
+}
+
+#clearButton:hover {
+    background-color: #cc0000;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.product-selection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-selection select {
+    flex: 1;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+    input, select, button {
+        font-size: 16px;
+    }
+}
+
+/* タブのスタイル */
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border: none;
+    background: transparent;
+}
+
+.tab-button {
+    padding: 1rem 2rem;
+    border: none;
+    background: var(--card-background);
+    color: var(--text-secondary);
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: var(--box-shadow);
+}
+
+.tab-button.active {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* 出品フォームのスタイル */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.button-group {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.generate-button {
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 20px 0;
+}
+
+.generate-button:hover {
+    background-color: #45a049;
+}
+
+.preview-container {
+    margin-top: 20px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.preview-box {
+    background: white;
+    padding: 15px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+#titlePreview {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+/* コピーボタンのスタイル */
+.copy-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.copy-button:hover {
+    background-color: #45a049;
+}
+
+.preview-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.condition-group {
+    margin: 20px 0;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+.condition-group h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.condition-group .form-group {
+    margin-bottom: 10px;
+}
+
+.condition-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* 部品フィールドのスタイル */
+.part-field {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.part-field select {
+    flex: 2;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.part-field .part-cost {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#addPartButton {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#addPartButton:hover {
+    background: #1976D2;
+}
+
+
+/* 通知のスタイル */
+.notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.stats-summary {
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.stats-header select {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.stats-item {
+    background: var(--card-background);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease;
+}
+
+.stats-item:hover {
+    transform: translateY(-5px);
+}
+
+.stats-item h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.stats-item p {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2196F3;
+}
+
+.device-summary {
+    margin-top: 30px;
+}
+
+.device-summary h4 {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+#deviceList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.device-item {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.device-item h5 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.device-item p {
+    margin: 5px 0;
+    color: #666;
+}
+
+/* モールのスタイル */
+.edit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.parts-edit-section {
+    margin: 20px 0;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-actions button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.modal-actions button:first-child {
+    background: #4CAF50;
+    color: white;
+}
+
+.modal-actions button:last-child {
+    background: #f44336;
+    color: white;
+}
+
+/* 部品フィールドのスタイル */
+.part-field {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.part-field input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.part-field .part-name {
+    flex: 2;
+}
+
+.part-field .part-cost {
+    flex: 1;
+}
+
+#addPartButton {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#addPartButton:hover {
+    background: #1976D2;
+}
+
+/* 統計コントロール */
+.stats-controls {
+    margin-bottom: 20px;
+}
+
+.stats-controls select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* 履歴表示 */
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease;
+}
+
+.result-item:last-child {
+    margin-bottom: 0;
+}
+
+.result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.result-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.result-date {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.high-profit {
+    border-left: 4px solid var(--primary-color);
+    background: linear-gradient(to right, #e3f2fd, #ffffff);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .history-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .month-selector {
+        width: 100%;
+    }
+    
+    .month-selector select {
+        width: 100%;
+    }
+
+    .result-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .result-info {
+        gap: 10px;
+        font-size: 0.9em;
+    }
+    
+    .result-actions {
+        align-self: flex-end;
+    }
+}
+
+.preview-section {
+    margin-top: 20px;
+}
+
+.preview-box {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.generate-button {
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 20px 0;
+}
+
+.generate-button:hover {
+    background-color: #45a049;
+}
+
+/* ボタンがフォーム送信されないようにする */
+button[type="button"] {
+    margin: 20px 0;
+}
+
+/* プレビューセクションのスタイル追加 */
+.preview-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.copy-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.copy-button:hover {
+    background-color: #45a049;
+}
+
+.copy-button.copied {
+    background-color: #2196F3;
+}
+
+.preview-box {
+    position: relative;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    min-height: 50px;
+    padding-right: 80px; /* コピーボタンのスペース確保 */
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .copy-button {
+        font-size: 12px;
+        padding: 4px 12px;
+    }
+}
+
+/* 追加部品のトグルボタンスタイル */
+.parts-toggle {
+    margin: 15px 0;
+    text-align: left;
+}
+
+.toggle-button {
+    background-color: #f0f0f0;
+    color: #333;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.toggle-button:hover {
+    background-color: #e0e0e0;
+}
+
+.toggle-button.active {
+    background-color: #2196F3;
+    color: white;
+    border-color: #1976D2;
+}
+
+/* 非表示クラス */
+.hidden {
+    display: none;
+}
+
+/* 部品フォームグループのスタイル */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.form-group select,
+.form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .toggle-button {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+.reference-price {
+    display: block;
+    color: #666;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* 入力フィールドのスタイル調整 */
+.form-group input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+/* フォーム要素のモダン化 */
+input, select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+    outline: none;
+}
+
+/* ボタンのモダン化 */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.calculate-button {
+    background: var(--primary-color);
+    color: white;
+}
+
+.save-button {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* 利益率20%以上の取引のハイライト */
+.result-item.high-profit {
+    background: linear-gradient(to right, #e3f2fd, #ffffff);
+    border-left: 4px solid var(--primary-color);
+}
+
+.profit-rate {
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+.high-profit .profit-rate {
+    color: #2196F3;
+    font-weight: bold;
+}
+
+/* 統計アイテムのサブテキスト */
+.sub-text {
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 0.5rem;
+}
+
+/* 統計カードのアニメーション改善 */
+.stats-item {
+    background: var(--card-background);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: all 0.3s ease;
+}
+
+.stats-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stats-item h4 {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.stats-item p {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ソートボタンのスタイル */
+.results-header {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.sort-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.sort-button {
+    padding: 8px 16px;
+    border: 1px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.sort-button:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.sort-button.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* 月別グループのスタイル */
+.month-group {
+    margin-bottom: 30px;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+}
+
+.month-header {
+    padding: 15px 20px;
+    margin: 0;
+    background: var(--primary-color);
+    color: white;
+    font-size: 1.2rem;
+}
+
+.month-results {
+    padding: 15px;
+}
+
+/* 履歴アイテムのスタイル */
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: var(--card-background);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: transform 0.3s ease;
+}
+
+.result-item:last-child {
+    margin-bottom: 0;
+}
+
+.result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.result-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.result-date {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.high-profit {
+    border-left: 4px solid var(--primary-color);
+    background: linear-gradient(to right, #e3f2fd, #ffffff);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .result-item {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .result-info {
+        gap: 10px;
+        font-size: 0.9em;
+    }
+    
+    .result-actions {
+        align-self: flex-end;
+    }
+}
