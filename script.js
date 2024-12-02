@@ -133,7 +133,6 @@ function initializeApp() {
 // DOMContentLoaded時の処理
 document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
-    addDataManagementButtons();
 });
 
 function initializeFormHandlers() {
@@ -485,79 +484,88 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
-// データのエクスポート/インポート機能を追加
+// データエクスポート機能
 function exportData() {
     try {
+        // LocalStorageからデータを取得
         const savedResults = JSON.parse(localStorage.getItem('savedResults')) || [];
-        const dataStr = JSON.stringify(savedResults, null, 2);
+        
+        // データを整形
+        const exportData = {
+            version: '1.0',
+            exportDate: new Date().toISOString(),
+            data: savedResults
+        };
+        
+        // JSONファイルとしてエクスポート
+        const dataStr = JSON.stringify(exportData, null, 2);
         const blob = new Blob([dataStr], { type: 'application/json' });
-        const dateStr = new Date().toISOString().slice(0, 10);
         const url = URL.createObjectURL(blob);
         
+        // ダウンロードリンクの作成と実行
         const a = document.createElement('a');
+        const date = new Date().toISOString().split('T')[0];
+        a.download = `iphone-sales-data-${date}.json`;
         a.href = url;
-        a.download = `sales_data_${dateStr}.json`;
-        document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
+        
+        // URLを解放
         URL.revokeObjectURL(url);
         
-        showNotification('データをエクスポートしました', 'success');
+        // 成功メッセージ
+        showNotification('データのエクスポートが完了しました', 'success');
     } catch (error) {
         console.error('エクスポートエラー:', error);
         showNotification('エクスポートに失敗しました', 'error');
     }
 }
 
+// データインポート機能
 function importData(file) {
+    if (!file) return;
+    
     const reader = new FileReader();
     reader.onload = function(e) {
         try {
-            const data = JSON.parse(e.target.result);
-            if (Array.isArray(data)) {
-                if (confirm('既存のデータに追加しますか？キャンセルを選択すると既存のデータは上書きされます。')) {
-                    const existingData = JSON.parse(localStorage.getItem('savedResults')) || [];
-                    const mergedData = [...existingData, ...data];
-                    localStorage.setItem('savedResults', JSON.stringify(mergedData));
-                } else {
-                    localStorage.setItem('savedResults', JSON.stringify(data));
-                }
-                
-                updateResultsList();
-                updateStats();
-                showNotification('データをインポートしました', 'success');
-            } else {
+            const importedData = JSON.parse(e.target.result);
+            
+            // データの検証
+            if (!Array.isArray(importedData.data)) {
                 throw new Error('Invalid data format');
             }
+            
+            // 既存のデータと結合するか確認
+            if (confirm('既存のデータに追加しますか？\nキャンセルを選択すると既存のデータは上書きされます。')) {
+                const existingData = JSON.parse(localStorage.getItem('savedResults')) || [];
+                const mergedData = [...existingData, ...importedData.data];
+                localStorage.setItem('savedResults', JSON.stringify(mergedData));
+            } else {
+                localStorage.setItem('savedResults', JSON.stringify(importedData.data));
+            }
+            
+            // 画面を更新
+            updateResultsList();
+            updateStats();
+            showNotification('データのインポートが完了しました', 'success');
         } catch (error) {
-            console.error('データの解析エラー:', error);
+            console.error('インポートエラー:', error);
             showNotification('インポートに失敗しました', 'error');
         }
     };
     reader.readAsText(file);
 }
 
-// HTML要素の追加
-function addDataManagementButtons() {
-    const historyHeader = document.querySelector('.history-header');
-    if (historyHeader) {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.className = 'data-management-buttons';
-        buttonContainer.innerHTML = `
-            <button onclick="exportData()" class="export-button">データのエクスポート</button>
-            <input type="file" id="importFile" accept=".json" style="display: none;">
-            <button onclick="document.getElementById('importFile').click()" class="import-button">データのインポート</button>
-        `;
-        historyHeader.appendChild(buttonContainer);
-
-        // インポートファイル選択のイベントリスナー
-        document.getElementById('importFile').addEventListener('change', function(e) {
-            if (e.target.files.length > 0) {
-                importData(e.target.files[0]);
-                e.target.value = ''; // ファイル選択をリセット
-            }
-        });
-    }
+// 通知表示機能
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
 // スタイルの追加
@@ -640,7 +648,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // 初期表示
         updateResultsList();
     }
-    // データ管理ボタンの追加
-    addDataManagementButtons();
 });
+
 

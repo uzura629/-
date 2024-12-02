@@ -172,16 +172,156 @@ function generateResultsList(results) {
         }).join('');
 }
 
-// 履歴タブ初期化時にデータ管理ボタンを追加
+// DOMContentLoaded時に1回だけ実行
 document.addEventListener('DOMContentLoaded', function() {
-    addDataManagementButtons();
-    // 初期表示
     updateResultsList();
 });
 
+let profitChart = null; // グラフのインスタンスをグローバルに保持
+
+function updateMonthlyProfitChart() {
+    const savedResults = JSON.parse(localStorage.getItem('savedResults')) || [];
+    const currentYear = new Date().getFullYear();
+    
+    // 月ごとのデータを初期化
+    const monthlyData = Array(12).fill(0);
+    const monthlyProfitRate = Array(12).fill(0);
+    const monthlyTotalSales = Array(12).fill(0);
+    const monthLabels = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+    
+    // 月ごとの利益と売上を集計
+    savedResults.forEach(result => {
+        const date = new Date(result.date);
+        if (date.getFullYear() === currentYear) {
+            const month = date.getMonth();
+            monthlyData[month] += Number(result.profit) || 0;
+            monthlyTotalSales[month] += Number(result.sellingPrice) || 0;
+        }
+    });
+
+    // 利益率を計算
+    monthlyProfitRate.forEach((_, index) => {
+        if (monthlyTotalSales[index] > 0) {
+            monthlyProfitRate[index] = (monthlyData[index] / monthlyTotalSales[index] * 100);
+        }
+    });
+
+    const ctx = document.getElementById('monthlyProfitChart').getContext('2d');
+    
+    if (profitChart) {
+        profitChart.destroy();
+    }
+    
+    profitChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: monthLabels,
+            datasets: [
+                {
+                    label: '月別利益',
+                    data: monthlyData,
+                    backgroundColor: 'rgba(33, 150, 243, 0.5)',
+                    borderColor: 'rgba(33, 150, 243, 1)',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    hoverBackgroundColor: 'rgba(33, 150, 243, 0.7)',
+                    order: 2
+                },
+                {
+                    label: '利益率',
+                    data: monthlyProfitRate,
+                    type: 'line',
+                    borderColor: 'rgba(76, 175, 80, 1)',
+                    borderWidth: 2,
+                    pointBackgroundColor: 'rgba(76, 175, 80, 1)',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: false,
+                    yAxisID: 'y1',
+                    order: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: `${currentYear}年 月別利益・利益率推移`,
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            if (context.dataset.label === '月別利益') {
+                                return `利益: ${context.raw.toLocaleString()}円`;
+                            } else {
+                                return `利益率: ${context.raw.toFixed(1)}%`;
+                            }
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    position: 'left',
+                    title: {
+                        display: true,
+                        text: '利益 (円)',
+                        color: 'rgba(33, 150, 243, 1)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + '円';
+                        },
+                        color: 'rgba(33, 150, 243, 1)'
+                    }
+                },
+                y1: {
+                    beginAtZero: true,
+                    position: 'right',
+                    title: {
+                        display: true,
+                        text: '利益率 (%)',
+                        color: 'rgba(76, 175, 80, 1)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value.toFixed(1) + '%';
+                        },
+                        color: 'rgba(76, 175, 80, 1)'
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    }
+                }
+            }
+        }
+    });
+}
+
+// 既存のupdateStats関数を修正
 function updateStats() {
     const currentMonth = new Date().getMonth() + 1;
     calculateStats(currentMonth);
+    updateMonthlyProfitChart(); // グラフの更新を追加
 }
 
 function formatDate(dateString) {
