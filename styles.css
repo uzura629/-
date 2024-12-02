@@ -171,11 +171,11 @@ button:hover {
         font-size: 16px;
     }
     .tabs {
-        flex-direction: column;
+        flex-direction: row;
         gap: 0.5rem;
     }
     .tab-button {
-        width: 100%;
+        width: auto;
         text-align: center;
     }
     .form-group, .button-group {
@@ -783,7 +783,7 @@ button[type="button"] {
     }
 }
 
-/* 追��部品のトグルボタンスタイル */
+/* 追部品のトグルボタンスタイル */
 .parts-toggle {
     margin: 15px 0;
     text-align: left;
@@ -1650,5 +1650,50 @@ input:focus, select:focus {
         height: 300px;
         padding: 1rem;
         margin-top: 1.5rem;
+    }
+}
+
+/* 入力フィールドの基本スタイル */
+input[type="number"],
+input[type="text"],
+select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* モバイル用の調整 */
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+    
+    /* 入力フィールドのモバイル調整 */
+    input[type="number"],
+    input[type="text"],
+    select {
+        width: 100%;
+        font-size: 16px;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+    
+    /* フォームグループのレイアウト調整 */
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 15px;
+        width: 100%;
+    }
+    
+    /* ラベルのスタイル調整 */
+    label {
+        margin-bottom: 5px;
+        font-size: 14px;
     }
 }
