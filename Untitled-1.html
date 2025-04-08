@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhoneリペア管理システム</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow);
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .menu-btn {
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .menu-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--secondary-color);
+            color: white;
+            transition: left 0.3s;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            overflow-y: auto;
+        }
+        
+        .sidebar.active {
+            left: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .close-btn {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .sidebar-menu {
+            padding: 20px 0;
+        }
+        
+        .sidebar-menu ul {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 10px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .card-header {
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .flex-wrap {
+            flex-wrap: wrap;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .mt-2 {
+            margin-top: 10px;
+        }
+        
+        .mt-4 {
+            margin-top: 20px;
+        }
+        
+        .mb-2 {
+            margin-bottom: 10px;
+        }
+        
+        .mb-4 {
+            margin-bottom: 20px;
+        }
+        
+        .gap-2 {
+            gap: 10px;
+        }
+        
+        .w-1\/2 {
+            width: 50%;
+        }
+        
+        .w-1\/3 {
+            width: 33.333%;
+        }
+        
+        .w-2\/3 {
+            width: 66.666%;
+        }
+        
+        .w-full {
+            width: 100%;
+        }
+        
+        .p-2 {
+            padding: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        table th {
+            background-color: var(--light-color);
+            font-weight: bold;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+        }
+        
+        .alert-success {
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+            color: #0f5132;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            border-color: #ffecb5;
+            color: #664d03;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #f5f7fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .w-1\/2, .w-1\/3, .w-2\/3 {
+                width: 100%;
+            }
+            
+            .flex {
+                flex-direction: column;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        #profitCalculatorForm .condition-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        #profitCalculatorForm .condition-item {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .result-box {
+            background-color: #f0f8ff;
+            border: 1px solid #d0e3ff;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .result-box h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 500;
+        }
+        
+        .result-value {
+            font-weight: bold;
+        }
+        
+        .profit-good {
+            color: var(--success-color);
+        }
+        
+        .profit-bad {
+            color: var(--danger-color);
+        }
+        
+        .profit-warning {
+            color: var(--warning-color);
+        }
+        
+        .text-area-container {
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .copy-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        #listingTitle, #listingDescription {
+            height: auto;
+            min-height: 100px;
+        }
+        
+        #listingDescription {
+            min-height: 300px;
+        }
+        
+        .settings-section {
+            margin-bottom: 30px;
+        }
+        
+        .settings-section h3 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .parts-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .parts-table th, .parts-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .parts-table th {
+            background-color: var(--light-color);
+        }
+        
+        .parts-table input {
+            width: 100%;
+        }
+        
+        .add-row-btn {
+            margin-top: 10px;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 15px;
+        }
+
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* モバイル対応 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .w-1\/2, .w-1\/3, .w-2\/3 {
+                width: 100%;
+            }
+            
+            .flex {
+                flex-direction: column;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group select,
+            .form-group input {
+                font-size: 16px; /* iOSでズームを防ぐ */
+            }
+
+            .condition-group {
+                flex-direction: column;
+            }
+
+            .condition-item {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .card {
+                margin-bottom: 15px;
+            }
+
+            .card-header {
+                padding: 10px 15px;
+            }
+
+            .card-body {
+                padding: 15px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .parts-table input,
+            .parts-table select {
+                width: 100%;
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>メニュー</h2>
+            <span class="close-btn" id="closeBtn"><i class="fas fa-times"></i></span>
+        </div>
+        <div class="sidebar-menu">
+            <ul>
+                <li><a href="#" data-page="dashboard"><i class="fas fa-tachometer-alt"></i> ダッシュボード</a></li>
+                <li><a href="#" data-page="inventory"><i class="fas fa-box"></i> 在庫管理</a></li>
+                <li><a href="#" data-page="profit-calculator"><i class="fas fa-calculator"></i> 利益計算</a></li>
+                <li><a href="#" data-page="listing-generator"><i class="fas fa-file-alt"></i> 出品文生成</a></li>
+                <li><a href="#" data-page="parts"><i class="fas fa-tools"></i> パーツ管理</a></li>
+                <li><a href="#" data-page="settings"><i class="fas fa-cog"></i> 設定</a></li>
+                <li><a href="#" data-page="statistics"><i class="fas fa-chart-bar"></i> 統計情報</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <header>
+        <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
+        <div class="logo">iPhoneリペア管理システム</div>
+    </header>
+    
+    <div class="container">
+        <!-- ダッシュボード -->
+        <div id="dashboard" class="page active">
+            <h1 class="mb-4">ダッシュボード</h1>
+            
+            <div class="grid">
+                <div class="stat-card">
+                    <h3>在庫数</h3>
+                    <div class="stat-value" id="inventoryCount">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>今月の売上</h3>
+                    <div class="stat-value" id="monthlySales">¥0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>今月の利益</h3>
+                    <div class="stat-value" id="monthlyProfit">¥0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>平均利益率</h3>
+                    <div class="stat-value" id="avgProfitMargin">0%</div>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">最近の取引</div>
+                <div class="card-body">
+                    <table id="recentTransactions">
+                        <thead>
+                            <tr>
+                                <th>日付</th>
+                                <th>機種</th>
+                                <th>仕入れ額</th>
+                                <th>販売額</th>
+                                <th>利益</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">データがありません</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">在庫アラート</div>
+                <div class="card-body" id="inventoryAlerts">
+                    <p>アラートはありません</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 在庫管理 -->
+        <div id="inventory" class="page hidden">
+            <h1 class="mb-4">在庫管理</h1>
+            
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <button class="btn" id="addInventoryBtn"><i class="fas fa-plus"></i> 新規追加</button>
+                </div>
+                <div>
+                    <input type="text" id="inventorySearch" placeholder="検索..." style="width: 200px;">
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">在庫一覧</div>
+                <div class="card-body">
+                    <table id="inventoryTable">
+                        <thead>
+                            <tr>
+                                <th>IMEI</th>
+                                <th>機種</th>
+                                <th>容量</th>
+                                <th>色</th>
+                                <th>仕入れ日</th>
+                                <th>仕入れ額</th>
+                                <th>状態</th>
+                                <th>ステータス</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="9">データがありません</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 在庫追加モーダル -->
+            <div id="inventoryModal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 id="modalTitle">在庫追加</h2>
+                        <span class="close-modal">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="inventoryForm">
+                            <input type="hidden" id="inventoryId">
+                            <div class="form-group">
+                                <label for="imei">IMEI</label>
+                                <input type="text" id="imei" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="model">機種</label>
+                                <select id="model" required>
+                                    <option value="">選択してください</option>
+                                    <option value="iPhone 6">iPhone 6</option>
+                                    <option value="iPhone 6s">iPhone 6s</option>
+                                    <option value="iPhone 7">iPhone 7</option>
+                                    <option value="iPhone 8">iPhone 8</option>
+                                    <option value="iPhone X">iPhone X</option>
+                                    <option value="iPhone XR">iPhone XR</option>
+                                    <option value="iPhone XS">iPhone XS</option>
+                                    <option value="iPhone 11">iPhone 11</option>
+                                    <option value="iPhone 12">iPhone 12</option>
+                                    <option value="iPhone 13">iPhone 13</option>
+                                    <option value="iPhone 14">iPhone 14</option>
+                                    <option value="iPhone 15">iPhone 15</option>
+                                    <option value="iPhone 6 Plus">iPhone 6 Plus</option>
+                                    <option value="iPhone 6s Plus">iPhone 6s Plus</option>
+                                    <option value="iPhone 7 Plus">iPhone 7 Plus</option>
+                                    <option value="iPhone 8 Plus">iPhone 8 Plus</option>
+                                    <option value="iPhone XS Max">iPhone XS Max</option>
+                                    <option value="iPhone 11 Pro">iPhone 11 Pro</option>
+                                    <option value="iPhone 11 Pro Max">iPhone 11 Pro Max</option>
+                                    <option value="iPhone 12 mini">iPhone 12 mini</option>
+                                    <option value="iPhone 12 Pro">iPhone 12 Pro</option>
+                                    <option value="iPhone 12 Pro Max">iPhone 12 Pro Max</option>
+                                    <option value="iPhone 13 mini">iPhone 13 mini</option>
+                                    <option value="iPhone 13 Pro">iPhone 13 Pro</option>
+                                    <option value="iPhone 13 Pro Max">iPhone 13 Pro Max</option>
+                                    <option value="iPhone 14 Plus">iPhone 14 Plus</option>
+                                    <option value="iPhone 14 Pro">iPhone 14 Pro</option>
+                                    <option value="iPhone 14 Pro Max">iPhone 14 Pro Max</option>
+                                    <option value="iPhone 15 Plus">iPhone 15 Plus</option>
+                                    <option value="iPhone 15 Pro">iPhone 15 Pro</option>
+                                    <option value="iPhone 15 Pro Max">iPhone 15 Pro Max</option>
+                                    <option value="iPhone SE (第1世代)">iPhone SE (第1世代)</option>
+                                    <option value="iPhone SE (第2世代)">iPhone SE (第2世代)</option>
+                                    <option value="iPhone SE (第3世代)">iPhone SE (第3世代)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="capacity">容量</label>
+                                <select id="capacity" required>
+                                    <option value="">選択してください</option>
+                                    <option value="16GB">16GB</option>
+                                    <option value="32GB">32GB</option>
+                                    <option value="64GB">64GB</option>
+                                    <option value="128GB">128GB</option>
+                                    <option value="256GB">256GB</option>
+                                    <option value="512GB">512GB</option>
+                                    <option value="1TB">1TB</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="color">色</label>
+                                <input type="text" id="color">
+                            </div>
+                            <div class="form-group">
+                                <label for="purchaseDate">仕入れ日</label>
+                                <input type="date" id="purchaseDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="purchasePrice">仕入れ額</label>
+                                <input type="number" id="purchasePrice" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="batteryHealth">バッテリー状態 (%)</label>
+                                <input type="number" id="batteryHealth" min="0" max="100" value="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="status">ステータス</label>
+                                <select id="status">
+                                    <option value="在庫中">在庫中</option>
+                                    <option value="出品中">出品中</option>
+                                    <option value="売却済み">売却済み</option>
+                                    <option value="修理中">修理中</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="notes">備考</label>
+                                <textarea id="notes"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">保存</button>
+                                <button type="button" class="btn btn-danger close-modal">キャンセル</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 利益計算 -->
+        <div id="profit-calculator" class="page hidden">
+            <h1 class="mb-4">利益計算</h1>
+            
+            <div class="card">
+                <div class="card-header">利益計算フォーム</div>
+                <div class="card-body">
+                    <form id="profitCalculatorForm">
+                        <div class="form-group">
+                            <label for="calcModel">機種</label>
+                            <select id="calcModel" required>
+                                <option value="">選択してください</option>
+                                <!-- 機種オプションはJavaScriptで動的に追加 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="calcPurchasePrice">仕入れ額</label>
+                            <input type="number" id="calcPurchasePrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="calcParts">パーツ</label>
+                            <select id="calcParts">
+                                <option value="">選択してください</option>
+                                <!-- パーツオプションはJavaScriptで動的に追加 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="calcSellingPrice">販売価格</label>
+                            <input type="number" id="calcSellingPrice" required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="includeShipping" checked>
+                                送料を含める
+                            </label>
+                            <input type="number" id="shippingCost" value="500">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="includeFee" checked>
+                                手数料を含める
+                            </label>
+                            <input type="number" id="feeRate" value="10" min="0" max="100">%
+                        </div>
+                        <div class="form-group">
+                            <label for="targetProfitRate">目標利益率 (%)</label>
+                            <input type="number" id="targetProfitRate" value="20" min="0" max="100">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">計算</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">計算結果</div>
+                <div class="card-body">
+                    <div id="calcResultBox" class="result-box hidden"></div>
+                    <div class="form-group mt-4">
+                        <button type="button" class="btn btn-primary" id="saveToInventoryBtn">在庫に保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 出品文生成 -->
+        <div id="listing-generator" class="page hidden">
+            <h1 class="mb-4">出品文生成</h1>
+            
+            <div class="card">
+                <div class="card-header">出品文生成フォーム</div>
+                <div class="card-body">
+                    <form id="listingGeneratorForm">
+                        <div class="form-group">
+                            <label for="listingModel">機種</label>
+                            <select id="listingModel" required>
+                                <option value="">選択してください</option>
+                                <!-- 機種オプションはJavaScriptで動的に追加 -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="listingCapacity">容量</label>
+                            <select id="listingCapacity" required>
+                                <option value="">選択してください</option>
+                                <option value="16GB">16GB</option>
+                                <option value="32GB">32GB</option>
+                                <option value="64GB">64GB</option>
+                                <option value="128GB">128GB</option>
+                                <option value="256GB">256GB</option>
+                                <option value="512GB">512GB</option>
+                                <option value="1TB">1TB</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="listingColor">色</label>
+                            <input type="text" id="listingColor">
+                        </div>
+                        <div class="form-group">
+                            <label for="listingCarrier">キャリア</label>
+                            <select id="listingCarrier" required>
+                                <option value="">選択してください</option>
+                                <option value="SIMフリー">SIMフリー</option>
+                                <option value="au">au</option>
+                                <option value="docomo">docomo</option>
+                                <option value="SoftBank">SoftBank</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="listingBatteryHealth">バッテリー状態 (%)</label>
+                            <input type="number" id="listingBatteryHealth" min="0" max="100" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>コンディション評価</label>
+                            <div class="condition-group">
+                                <div class="condition-item">
+                                    <label for="listingScreenCondition">画面状態</label>
+                                    <select id="listingScreenCondition">
+                                        <option value="SS">SS (新品同様)</option>
+                                        <option value="S">S (ほぼ無傷)</option>
+                                        <option value="A">A (小傷あり)</option>
+                                        <option value="B" selected>B (薄い傷あり)</option>
+                                        <option value="C">C (傷多い)</option>
+                                        <option value="D">D (大きな傷あり)</option>
+                                    </select>
+                                </div>
+                                <div class="condition-item">
+                                    <label for="listingBackCondition">背面状態</label>
+                                    <select id="listingBackCondition">
+                                        <option value="SS">SS (新品同様)</option>
+                                        <option value="S">S (ほぼ無傷)</option>
+                                        <option value="A">A (小傷あり)</option>
+                                        <option value="B" selected>B (小さな傷あり)</option>
+                                        <option value="C">C (傷多い)</option>
+                                        <option value="D">D (大きな傷あり)</option>
+                                    </select>
+                                </div>
+                                <div class="condition-item">
+                                    <label for="listingSideCondition">側面状態</label>
+                                    <select id="listingSideCondition">
+                                        <option value="SS">SS (新品同様)</option>
+                                        <option value="S">S (ほぼ無傷)</option>
+                                        <option value="A">A (小傷あり)</option>
+                                        <option value="B" selected>B (小さな傷あり)</option>
+                                        <option value="C">C (傷多い)</option>
+                                        <option value="D">D (大きな傷あり)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="condition-group">
+                                <div class="condition-item">
+                                    <label for="listingTopCondition">上面状態</label>
+                                    <select id="listingTopCondition">
+                                        <option value="SS">SS (新品同様)</option>
+                                        <option value="S">S (ほぼ無傷)</option>
+                                        <option value="A">A (小傷あり)</option>
+                                        <option value="B" selected>B (小さな傷あり)</option>
+                                        <option value="C">C (傷多い)</option>
+                                        <option value="D">D (大きな傷あり)</option>
+                                    </select>
+                                </div>
+                                <div class="condition-item">
+                                    <label for="listingBottomCondition">底面状態</label>
+                                    <select id="listingBottomCondition">
+                                        <option value="SS">SS (新品同様)</option>
+                                        <option value="S">S (ほぼ無傷)</option>
+                                        <option value="A">A (小傷あり)</option>
+                                        <option value="B" selected>B (細かい傷あり)</option>
+                                        <option value="C">C (傷多い)</option>
+                                        <option value="D">D (大きな傷あり)</option>
+                                    </select>
+                                </div>
+                                <div class="condition-item">
+                                    <label for="listingOverallCondition">総合評価</label>
+                                    <select id="listingOverallCondition">
+                                        <option value="SS">SS (新品同様)</option>
+                                        <option value="S">S (ほぼ無傷)</option>
+                                        <option value="A">A (小傷あり)</option>
+                                        <option value="B" selected>B (美品)</option>
+                                        <option value="C">C (傷多い)</option>
+                                        <option value="D">D (大きな傷あり)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">生成</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">生成結果</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="listingTitle">タイトル</label>
+                        <div class="text-area-container">
+                            <textarea id="listingTitle" readonly></textarea>
+                            <button class="copy-btn hidden" id="copyTitleBtn">コピー</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="listingDescription">商品説明</label>
+                        <div class="text-area-container">
+                            <textarea id="listingDescription" readonly></textarea>
+                            <button class="copy-btn hidden" id="copyDescBtn">コピー</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- パーツ管理 -->
+        <div id="parts" class="page hidden">
+            <h1 class="mb-4">パーツ管理</h1>
+            
+            <div class="card">
+                <div class="card-header">パーツ一覧</div>
+                <div class="card-body">
+                    <form id="partsForm">
+                        <table class="parts-table">
+                            <thead>
+                                <tr>
+                                    <th>機種</th>
+                                    <th>パーツ名</th>
+                                    <th>価格</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="partsTableBody">
+                                <tr>
+                                    <td>
+                                        <select name="part-model" required>
+                                            <option value="">選択してください</option>
+                                            <!-- 機種オプションはJavaScriptで動的に追加 -->
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <input type="text" name="part-name" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="part-price" required>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger delete-part">削除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button type="button" class="btn add-row-btn" id="addPartBtn">
+                            <i class="fas fa-plus"></i> パーツを追加
+                        </button>
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-success">保存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 設定 -->
+        <div id="settings" class="page hidden">
+            <h1 class="mb-4">設定</h1>
+            
+            <div class="card">
+                <div class="card-header">基本設定</div>
+                <div class="card-body">
+                    <form id="settingsForm">
+                        <div class="settings-section">
+                            <h3>利益計算設定</h3>
+                            <p class="text-muted mb-3">利益計算時のデフォルト値を設定します。これらの値は新規計算時に自動的に設定されます。</p>
+                            
+                            <div class="form-group">
+                                <label for="defaultProfitRate">デフォルト目標利益率 (%)</label>
+                                <input type="number" id="defaultProfitRate" min="0" max="100" value="20">
+                                <small class="form-text text-muted">利益計算時のデフォルトの目標利益率を設定します。</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultShippingCost">デフォルト送料</label>
+                                <input type="number" id="defaultShippingCost" value="500">
+                                <small class="form-text text-muted">利益計算時に自動的に設定される送料を設定します。</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="defaultFeeRate">デフォルト手数料率 (%)</label>
+                                <input type="number" id="defaultFeeRate" min="0" max="100" value="10">
+                                <small class="form-text text-muted">利益計算時に自動的に設定される手数料率を設定します。</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">保存</button>
+                            <button type="reset" class="btn btn-danger">リセット</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 統計情報 -->
+        <div id="statistics" class="page hidden">
+            <h1 class="mb-4">統計情報</h1>
+            
+            <div class="card">
+                <div class="card-header">統計情報フォーム</div>
+                <div class="card-body">
+                    <form id="statisticsForm">
+                        <div class="form-group">
+                            <label for="totalInventory">総在庫数</label>
+                            <input type="number" id="totalInventory" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="totalSales">総売上</label>
+                            <input type="number" id="totalSales" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="totalProfit">総利益</label>
+                            <input type="number" id="totalProfit" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="avgProfitMargin">平均利益率</label>
+                            <input type="number" id="avgProfitMargin" readonly>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">更新</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 機種リスト
+        const iPhoneModels = [
+            'iPhone 6', 'iPhone 6s', 'iPhone 7', 'iPhone 8', 'iPhone X',
+            'iPhone XR', 'iPhone XS', 'iPhone 11', 'iPhone 12', 'iPhone 13',
+            'iPhone 14', 'iPhone 15', 'iPhone 6 Plus', 'iPhone 6s Plus',
+            'iPhone 7 Plus', 'iPhone 8 Plus', 'iPhone XS Max', 'iPhone 11 Pro',
+            'iPhone 11 Pro Max', 'iPhone 12 mini', 'iPhone 12 Pro',
+            'iPhone 12 Pro Max', 'iPhone 13 mini', 'iPhone 13 Pro',
+            'iPhone 13 Pro Max', 'iPhone 14 Plus', 'iPhone 14 Pro',
+            'iPhone 14 Pro Max', 'iPhone 15 Plus', 'iPhone 15 Pro',
+            'iPhone 15 Pro Max', 'iPhone SE (第1世代)', 'iPhone SE (第2世代)',
+            'iPhone SE (第3世代)'
+        ];
+
+        // 機種選択肢を更新する関数
+        function updateModelOptions() {
+            const modelSelects = document.querySelectorAll('select[id$="Model"], select[name="part-model"]');
+            modelSelects.forEach(select => {
+                // 既存のオプションをクリア（最初の空オプションは残す）
+                while (select.options.length > 1) {
+                    select.remove(1);
+                }
+                
+                // 機種オプションを追加
+                iPhoneModels.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // パーツ管理の行を追加する関数
+        function addPartsRow() {
+            const tbody = document.getElementById('partsTableBody');
+            
+            // "データがありません"の行がある場合は削除
+            if (tbody.rows.length === 1 && tbody.rows[0].cells.length === 1) {
+                tbody.innerHTML = '';
+            }
+            
+            const row = document.createElement('tr');
+            
+            row.innerHTML = `
+                <td>
+                    <select name="part-model" required>
+                        <option value="">選択してください</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="part-name" required>
+                </td>
+                <td>
+                    <input type="number" name="part-price" required>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger delete-part">削除</button>
+                </td>
+            `;
+            
+            tbody.appendChild(row);
+            
+            // 新しい行の機種選択肢を更新
+            const newSelect = row.querySelector('select[name="part-model"]');
+            iPhoneModels.forEach(model => {
+                const option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                newSelect.appendChild(option);
+            });
+            
+            // 削除ボタンのイベントリスナーを追加
+            const deleteBtn = row.querySelector('.delete-part');
+            deleteBtn.addEventListener('click', function() {
+                row.remove();
+                
+                // テーブルが空になった場合、「データがありません」を表示
+                if (tbody.rows.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4">データがありません</td></tr>';
+                }
+            });
+        }
+
+        // ページ読み込み時の初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 機種選択肢を更新
+            updateModelOptions();
+            
+            // パーツ追加ボタンのイベントリスナー
+            const addPartBtn = document.getElementById('addPartBtn');
+            if (addPartBtn) {
+                addPartBtn.addEventListener('click', addPartsRow);
+            }
+            
+            // パーツフォームの送信
+            const partsForm = document.getElementById('partsForm');
+            if (partsForm) {
+                partsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const rows = document.getElementById('partsTableBody').rows;
+                    const parts = [];
+                    
+                    for (let i = 0; i < rows.length; i++) {
+                        const model = rows[i].querySelector('select[name="part-model"]').value;
+                        const name = rows[i].querySelector('input[name="part-name"]').value;
+                        const price = rows[i].querySelector('input[name="part-price"]').value;
+                        
+                        if (model && name && price) {
+                            parts.push({
+                                model,
+                                name,
+                                price: parseInt(price)
+                            });
+                        }
+                    }
+                    
+                    localStorage.setItem('parts', JSON.stringify(parts));
+                    alert('パーツ情報を保存しました');
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // サイドバーの操作
+            const menuBtn = document.getElementById('menuBtn');
+            const closeBtn = document.getElementById('closeBtn');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            menuBtn.addEventListener('click', function() {
+                sidebar.classList.add('active');
+                overlay.style.display = 'block';
+            });
+            
+            closeBtn.addEventListener('click', function() {
+                closeSidebar();
+            });
+            
+            overlay.addEventListener('click', function() {
+                closeSidebar();
+            });
+            
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                overlay.style.display = 'none';
+            }
+            
+            // ページ切り替え
+            const menuLinks = document.querySelectorAll('.sidebar-menu a');
+            const pages = document.querySelectorAll('.page');
+            
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetPage = this.getAttribute('data-page');
+                    
+                    pages.forEach(page => {
+                        page.classList.add('hidden');
+                        page.classList.remove('active');
+                    });
+                    
+                    document.getElementById(targetPage).classList.remove('hidden');
+                    document.getElementById(targetPage).classList.add('active');
+                    
+                    closeSidebar();
+                });
+            });
+            
+            // モーダル操作
+            const closeModalBtns = document.querySelectorAll('.close-modal');
+            
+            closeModalBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    modal.classList.add('hidden');
+                });
+            });
+            
+            // 在庫追加モーダル
+            const addInventoryBtn = document.getElementById('addInventoryBtn');
+            const inventoryModal = document.getElementById('inventoryModal');
+            
+            addInventoryBtn.addEventListener('click', function() {
+                document.getElementById('modalTitle').textContent = '在庫追加';
+                document.getElementById('inventoryForm').reset();
+                document.getElementById('inventoryId').value = '';
+                
+                // 今日の日付をデフォルトでセット
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('purchaseDate').value = today;
+                
+                inventoryModal.classList.remove('hidden');
+            });
+            
+            // 在庫フォーム送信
+            const inventoryForm = document.getElementById('inventoryForm');
+            
+            inventoryForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // フォームからデータ取得
+                const inventoryId = document.getElementById('inventoryId').value;
+                const imei = document.getElementById('imei').value;
+                const model = document.getElementById('model').value;
+                const capacity = document.getElementById('capacity').value;
+                const color = document.getElementById('color').value;
+                const purchaseDate = document.getElementById('purchaseDate').value;
+                const purchasePrice = document.getElementById('purchasePrice').value;
+                const screenCondition = document.getElementById('screenCondition').value;
+                const backCondition = document.getElementById('backCondition').value;
+                const sideCondition = document.getElementById('sideCondition').value;
+                const topCondition = document.getElementById('topCondition').value;
+                const bottomCondition = document.getElementById('bottomCondition').value;
+                const overallCondition = document.getElementById('overallCondition').value;
+                const batteryHealth = document.getElementById('batteryHealth').value;
+                const status = document.getElementById('status').value;
+                const notes = document.getElementById('notes').value;
+                
+                // 新規データの場合
+                if (!inventoryId) {
+                    const newInventory = {
+                        id: Date.now().toString(),
+                        imei,
+                        model,
+                        capacity,
+                        color,
+                        purchaseDate,
+                        purchasePrice,
+                        screenCondition,
+                        backCondition,
+                        sideCondition,
+                        topCondition,
+                        bottomCondition,
+                        overallCondition,
+                        batteryHealth,
+                        status,
+                        notes,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    // ローカルストレージから在庫データを取得
+                    let inventories = JSON.parse(localStorage.getItem('inventories')) || [];
+                    
+                    // 新しい在庫を追加
+                    inventories.push(newInventory);
+                    
+                    // ローカルストレージに保存
+                    localStorage.setItem('inventories', JSON.stringify(inventories));
+                } else {
+                    // 既存データの更新
+                    let inventories = JSON.parse(localStorage.getItem('inventories')) || [];
+                    const index = inventories.findIndex(item => item.id === inventoryId);
+                    
+                    if (index !== -1) {
+                        inventories[index] = {
+                            ...inventories[index],
+                            imei,
+                            model,
+                            capacity,
+                            color,
+                            purchaseDate,
+                            purchasePrice,
+                            screenCondition,
+                            backCondition,
+                            sideCondition,
+                            topCondition,
+                            bottomCondition,
+                            overallCondition,
+                            batteryHealth,
+                            status,
+                            notes,
+                            updatedAt: new Date().toISOString()
+                        };
+                        
+                        localStorage.setItem('inventories', JSON.stringify(inventories));
+                    }
+                }
+                
+                // モーダルを閉じる
+                inventoryModal.classList.add('hidden');
+                
+                // 在庫テーブルを更新
+                loadInventoryTable();
+                
+                // ダッシュボードの統計を更新
+                updateDashboardStats();
+            });
+            
+            // 在庫テーブルの表示
+            function loadInventoryTable() {
+                const inventoryTable = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0];
+                const inventories = JSON.parse(localStorage.getItem('inventories')) || [];
+                
+                if (inventories.length === 0) {
+                    inventoryTable.innerHTML = '<tr><td colspan="9">データがありません</td></tr>';
+                    return;
+                }
+                
+                inventoryTable.innerHTML = '';
+                
+                inventories.forEach(item => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${item.imei}</td>
+                        <td>${item.model}</td>
+                        <td>${item.capacity}</td>
+                        <td>${item.color || '-'}</td>
+                        <td>${item.purchaseDate}</td>
+                        <td>¥${Number(item.purchasePrice).toLocaleString()}</td>
+                        <td>${item.overallCondition}</td>
+                        <td>${item.status}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm edit-inventory" data-id="${item.id}">編集</button>
+                            <button class="btn btn-danger btn-sm delete-inventory" data-id="${item.id}">削除</button>
+                        </td>
+                    `;
+                    
+                    inventoryTable.appendChild(row);
+                });
+                
+                // 編集ボタンのイベントリスナー
+                const editButtons = document.querySelectorAll('.edit-inventory');
+                editButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        editInventory(id);
+                    });
+                });
+                
+                // 削除ボタンのイベントリスナー
+                const deleteButtons = document.querySelectorAll('.delete-inventory');
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        if (confirm('この在庫を削除してもよろしいですか？')) {
+                            deleteInventory(id);
+                        }
+                    });
+                });
+            }
+            
+            // 在庫編集
+            function editInventory(id) {
+                const inventories = JSON.parse(localStorage.getItem('inventories')) || [];
+                const inventory = inventories.find(item => item.id === id);
+                
+                if (inventory) {
+                    document.getElementById('modalTitle').textContent = '在庫編集';
+                    document.getElementById('inventoryId').value = inventory.id;
+                    document.getElementById('imei').value = inventory.imei;
+                    document.getElementById('model').value = inventory.model;
+                    document.getElementById('capacity').value = inventory.capacity;
+                    document.getElementById('color').value = inventory.color || '';
+                    document.getElementById('purchaseDate').value = inventory.purchaseDate;
+                    document.getElementById('purchasePrice').value = inventory.purchasePrice;
+                    document.getElementById('screenCondition').value = inventory.screenCondition;
+                    document.getElementById('backCondition').value = inventory.backCondition;
+                    document.getElementById('sideCondition').value = inventory.sideCondition;
+                    document.getElementById('topCondition').value = inventory.topCondition;
+                    document.getElementById('bottomCondition').value = inventory.bottomCondition;
+                    document.getElementById('overallCondition').value = inventory.overallCondition;
+                    document.getElementById('batteryHealth').value = inventory.batteryHealth;
+                    document.getElementById('status').value = inventory.status;
+                    document.getElementById('notes').value = inventory.notes || '';
+                    
+                    inventoryModal.classList.remove('hidden');
+                }
+            }
+            
+            // 在庫削除
+            function deleteInventory(id) {
+                let inventories = JSON.parse(localStorage.getItem('inventories')) || [];
+                inventories = inventories.filter(item => item.id !== id);
+                localStorage.setItem('inventories', JSON.stringify(inventories));
+                
+                loadInventoryTable();
+                updateDashboardStats();
+            }
+            
+            // 検索機能
+            const inventorySearch = document.getElementById('inventorySearch');
+            
+            inventorySearch.addEventListener('input', function() {
+                const searchText = this.value.toLowerCase();
+                const inventoryTable = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0];
+                const rows = inventoryTable.getElementsByTagName('tr');
+                
+                for (let i = 0; i < rows.length; i++) {
+                    const rowText = rows[i].textContent.toLowerCase();
+                    if (rowText.includes(searchText) || rows[i].cells.length === 1) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            });
+            
+            // パーツ管理
+            const partsTable = document.getElementById('partsTable');
+            const addPartBtn = document.getElementById('addPartBtn');
+            const partsForm = document.getElementById('partsForm');
+            
+            // パーツの読み込み
+            function loadParts() {
+                const partsTableBody = document.getElementById('partsTableBody');
+                const parts = JSON.parse(localStorage.getItem('parts')) || [];
+                
+                if (parts.length === 0) {
+                    partsTableBody.innerHTML = '<tr><td colspan="5">データがありません</td></tr>';
+                    return;
+                }
+                
+                partsTableBody.innerHTML = '';
+                
+                parts.forEach((part, index) => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>
+                            <input type="text" name="part-model" value="${part.model}" required>
+                        </td>
+                        <td>
+                            <input type="text" name="part-name" value="${part.name}" required>
+                        </td>
+                        <td>
+                            <input type="number" name="part-price" value="${part.price}" required>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger delete-part" data-index="${index}">削除</button>
+                        </td>
+                    `;
+                    
+                    partsTableBody.appendChild(row);
+                });
+                
+                // 削除ボタンのイベントリスナー
+                const deletePartBtns = document.querySelectorAll('.delete-part');
+                deletePartBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        deletePart(index);
+                    });
+                });
+            }
+            
+            // パーツフォームの送信
+            if (partsForm) {
+                partsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const rows = document.getElementById('partsTableBody').rows;
+                    const parts = [];
+                    
+                    for (let i = 0; i < rows.length; i++) {
+                        const model = rows[i].querySelector('input[name="part-model"]').value;
+                        const name = rows[i].querySelector('input[name="part-name"]').value;
+                        const price = rows[i].querySelector('input[name="part-price"]').value;
+                        
+                        if (model && name && price) {
+                            parts.push({
+                                model,
+                                name,
+                                price
+                            });
+                        }
+                    }
+                    
+                    localStorage.setItem('parts', JSON.stringify(parts));
+                    alert('パーツ情報を保存しました');
+                    
+                    // 利益計算のモデル選択肢を更新
+                    updateModelOptions();
+                    
+                    // パーツ選択肢を更新
+                    updatePartOptions();
+                });
+            }
+            
+            // パーツの削除
+            function deletePart(index) {
+                if (confirm('このパーツを削除してもよろしいですか？')) {
+                    const parts = JSON.parse(localStorage.getItem('parts')) || [];
+                    parts.splice(index, 1);
+                    localStorage.setItem('parts', JSON.stringify(parts));
+                    loadParts();
+                }
+            }
+            
+            // 利益計算機能
+            const profitCalculatorForm = document.getElementById('profitCalculatorForm');
+            const calcResultBox = document.getElementById('calcResultBox');
+            
+            // モデル選択肢の更新
+            function updateModelOptions() {
+                const calcModel = document.getElementById('calcModel');
+                const listingModel = document.getElementById('listingModel');
+                
+                if (!calcModel && !listingModel) return;
+                
+                const modelOptions = `
+                    <option value="">選択してください</option>
+                    <option value="iPhone 6">iPhone 6</option>
+                    <option value="iPhone 6s">iPhone 6s</option>
+                    <option value="iPhone 7">iPhone 7</option>
+                    <option value="iPhone 8">iPhone 8</option>
+                    <option value="iPhone X">iPhone X</option>
+                    <option value="iPhone XR">iPhone XR</option>
+                    <option value="iPhone XS">iPhone XS</option>
+                    <option value="iPhone 11">iPhone 11</option>
+                    <option value="iPhone 12">iPhone 12</option>
+                    <option value="iPhone 13">iPhone 13</option>
+                    <option value="iPhone 14">iPhone 14</option>
+                    <option value="iPhone 15">iPhone 15</option>
+                    <option value="iPhone 6 Plus">iPhone 6 Plus</option>
+                    <option value="iPhone 6s Plus">iPhone 6s Plus</option>
+                    <option value="iPhone 7 Plus">iPhone 7 Plus</option>
+                    <option value="iPhone 8 Plus">iPhone 8 Plus</option>
+                    <option value="iPhone XS Max">iPhone XS Max</option>
+                    <option value="iPhone 11 Pro">iPhone 11 Pro</option>
+                    <option value="iPhone 11 Pro Max">iPhone 11 Pro Max</option>
+                    <option value="iPhone 12 mini">iPhone 12 mini</option>
+                    <option value="iPhone 12 Pro">iPhone 12 Pro</option>
+                    <option value="iPhone 12 Pro Max">iPhone 12 Pro Max</option>
+                    <option value="iPhone 13 mini">iPhone 13 mini</option>
+                    <option value="iPhone 13 Pro">iPhone 13 Pro</option>
+                    <option value="iPhone 13 Pro Max">iPhone 13 Pro Max</option>
+                    <option value="iPhone 14 Plus">iPhone 14 Plus</option>
+                    <option value="iPhone 14 Pro">iPhone 14 Pro</option>
+                    <option value="iPhone 14 Pro Max">iPhone 14 Pro Max</option>
+                    <option value="iPhone 15 Plus">iPhone 15 Plus</option>
+                    <option value="iPhone 15 Pro">iPhone 15 Pro</option>
+                    <option value="iPhone 15 Pro Max">iPhone 15 Pro Max</option>
+                    <option value="iPhone SE (第1世代)">iPhone SE (第1世代)</option>
+                    <option value="iPhone SE (第2世代)">iPhone SE (第2世代)</option>
+                    <option value="iPhone SE (第3世代)">iPhone SE (第3世代)</option>
+                `;
+                
+                if (calcModel) calcModel.innerHTML = modelOptions;
+                if (listingModel) listingModel.innerHTML = modelOptions;
+            }
+            
+            // パーツ選択肢の更新
+            function updatePartOptions() {
+                const calcParts = document.getElementById('calcParts');
+                if (!calcParts) return;
+                
+                const parts = JSON.parse(localStorage.getItem('parts')) || [];
+                let options = '';
+                
+                parts.forEach(part => {
+                    options += `<option value="${part.price}" data-model="${part.model}" data-name="${part.name}">${part.model} - ${part.name} (¥${Number(part.price).toLocaleString()})</option>`;
+                });
+                
+                calcParts.innerHTML = `<option value="">選択してください</option>` + options;
+            }
+            
+            // モデル変更時のパーツフィルタリング
+            const calcModel = document.getElementById('calcModel');
+            if (calcModel) {
+                calcModel.addEventListener('change', function() {
+                    const selectedModel = this.value;
+                    const calcParts = document.getElementById('calcParts');
+                    const parts = JSON.parse(localStorage.getItem('parts')) || [];
+                    
+                    let options = '<option value="">選択してください</option>';
+                    
+                    parts.forEach(part => {
+                        if (part.model === selectedModel || part.model === 'すべて') {
+                            options += `<option value="${part.price}" data-model="${part.model}" data-name="${part.name}">${part.model} - ${part.name} (¥${Number(part.price).toLocaleString()})</option>`;
+                        }
+                    });
+                    
+                    calcParts.innerHTML = options;
+                });
+            }
+            
+            // 利益計算フォームの送信
+            if (profitCalculatorForm) {
+                profitCalculatorForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // フォームからデータ取得
+                    const model = document.getElementById('calcModel').value;
+                    const purchasePrice = parseFloat(document.getElementById('calcPurchasePrice').value) || 0;
+                    const selectedPartsElement = document.getElementById('calcParts');
+                    let partsPrice = 0;
+                    let partsName = '';
+                    
+                    if (selectedPartsElement && selectedPartsElement.value) {
+                        partsPrice = parseFloat(selectedPartsElement.value) || 0;
+                        const selectedOption = selectedPartsElement.options[selectedPartsElement.selectedIndex];
+                        partsName = selectedOption.getAttribute('data-name') || '';
+                    }
+                    
+                    const sellingPrice = parseFloat(document.getElementById('calcSellingPrice').value) || 0;
+                    const includeShipping = document.getElementById('includeShipping').checked;
+                    const shippingCost = includeShipping ? (parseFloat(document.getElementById('shippingCost').value) || 0) : 0;
+                    const includeFee = document.getElementById('includeFee').checked;
+                    const feeRate = includeFee ? (parseFloat(document.getElementById('feeRate').value) || 0) / 100 : 0;
+                    
+                    // 利益計算
+                    const feeAmount = includeFee ? sellingPrice * feeRate : 0;
+                    const totalCost = purchasePrice + partsPrice + shippingCost;
+                    const profit = sellingPrice - totalCost - feeAmount;
+                    const profitMargin = sellingPrice > 0 ? (profit / sellingPrice) * 100 : 0;
+                    
+                    // 目標利益率での売価計算
+                    const targetProfitRate = parseFloat(document.getElementById('targetProfitRate').value) || 20;
+                    const targetSellingPrice = (totalCost + feeAmount) / (1 - targetProfitRate / 100);
+                    
+                    // 結果の表示
+                    let profitClass = '';
+                    if (profitMargin >= 20) {
+                        profitClass = 'profit-good';
+                    } else if (profitMargin >= 10) {
+                        profitClass = 'profit-warning';
+                    } else if (profitMargin < 10) {
+                        profitClass = 'profit-bad';
+                    }
+                    
+                    calcResultBox.innerHTML = `
+                        <h3>計算結果</h3>
+                        <div class="result-item">
+                            <span class="result-label">機種:</span>
+                            <span class="result-value">${model}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">仕入れ額:</span>
+                            <span class="result-value">¥${purchasePrice.toLocaleString()}</span>
+                        </div>
+                        ${partsName ? `
+                        <div class="result-item">
+                            <span class="result-label">パーツ (${partsName}):</span>
+                            <span class="result-value">¥${partsPrice.toLocaleString()}</span>
+                        </div>
+                        ` : ''}
+                        ${includeShipping ? `
+                        <div class="result-item">
+                            <span class="result-label">送料:</span>
+                            <span class="result-value">¥${shippingCost.toLocaleString()}</span>
+                        </div>
+                        ` : ''}
+                        ${includeFee ? `
+                        <div class="result-item">
+                            <span class="result-label">販売手数料 (${feeRate * 100}%):</span>
+                            <span class="result-value">¥${feeAmount.toLocaleString()}</span>
+                        </div>
+                        ` : ''}
+                        <div class="result-item">
+                            <span class="result-label">総コスト:</span>
+                            <span class="result-value">¥${totalCost.toLocaleString()}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">販売価格:</span>
+                            <span class="result-value">¥${sellingPrice.toLocaleString()}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">利益:</span>
+                            <span class="result-value ${profitClass}">¥${profit.toLocaleString()}</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">利益率:</span>
+                            <span class="result-value ${profitClass}">${profitMargin.toFixed(2)}%</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">${targetProfitRate}%利益を出すための販売価格:</span>
+                            <span class="result-value">¥${targetSellingPrice.toLocaleString()}</span>
+                        </div>
+                    `;
+                    
+                    calcResultBox.classList.remove('hidden');
+                });
+            }
+            
+            // 出品文生成
+            const listingGeneratorForm = document.getElementById('listingGeneratorForm');
+            const listingTitle = document.getElementById('listingTitle');
+            const listingDescription = document.getElementById('listingDescription');
+            
+            if (listingGeneratorForm) {
+                listingGeneratorForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // フォームからデータ取得
+                    const model = document.getElementById('listingModel').value;
+                    const capacity = document.getElementById('listingCapacity').value;
+                    const color = document.getElementById('listingColor').value || '記載なし';
+                    const carrier = document.getElementById('listingCarrier').value;
+                    const batteryHealth = document.getElementById('listingBatteryHealth').value;
+                    const overallCondition = document.getElementById('listingOverallCondition').value;
+                    const screenCondition = document.getElementById('listingScreenCondition').value;
+                    const backCondition = document.getElementById('listingBackCondition').value;
+                    const sideCondition = document.getElementById('listingSideCondition').value;
+                    const topCondition = document.getElementById('listingTopCondition').value;
+                    const bottomCondition = document.getElementById('listingBottomCondition').value;
+                    
+                    // タイトル生成
+                    let title = '';
+                    switch (overallCondition) {
+                        case 'SS':
+                            title = `【新品同様】${model} 本体 ${capacity} ${carrier}`;
+                            break;
+                        case 'S':
+                            title = `【極美品】${model} 本体 ${capacity} ${carrier}`;
+                            break;
+                        case 'A':
+                            title = `【美品】${model} 本体 ${capacity} ${carrier}`;
+                            break;
+                        case 'B':
+                            title = `【良品】${model} 本体 ${capacity} ${carrier}`;
+                            break;
+                        case 'C':
+                        case 'D':
+                            title = `${model} 本体 ${capacity} ${carrier}`;
+                            break;
+                        default:
+                            title = `${model} 本体 ${capacity} ${carrier}`;
+                    }
+                    
+                    // 商品説明文生成
+                    const description = `■商品情報
+【商品名】${model}
+【色】 ${color}
+【キャリア】 ${carrier}
+【本体容量】${capacity}
+【バッテリー容量】${batteryHealth}%
+
+【ネットワーク利用制限】◯
+【アクティベーションロック】解除済み
+
+■付属品
+1.9H強化ガラス（貼り付け済み）
+2.純正品質ライトニングケーブル(新品のため動作未確認)
+3.simピン
+
+■商品状態
+画面→ ${getConditionDescription('screen', screenCondition)}
+背面→ ${getConditionDescription('back', backCondition)}
+側面→ ${getConditionDescription('side', sideCondition)}
+底面→ ${getConditionDescription('bottom', bottomCondition)}
+上面→ ${getConditionDescription('top', topCondition)}
+総合評価: ${overallCondition}
+
+■状態ランク
+【SS】→新品同様の外観。傷や汚れが全くない完璧な状態。
+【S】→無傷。もしくは拡大すると薄い傷が見えるがほとんど気にならない非常に綺麗な状態。ほぼ新品同様。
+【A】→多少の見える傷はあるが、数が少なく中古にしては綺麗な状態。
+【B】→所々細かい傷や汚れがある。一般的な中古品の状態。
+【C】→比較的傷が多い状態。カバーなどする方におすすめ。
+【J】→ジャンク品。記載してある以外にも不具合がある場合がある。
+
+■発送について
+基本的に、購入頂いてから翌日までの発送を心がけています！
+
+■注意事項
+キズなどの状態を全て伝えるよう努力しておりますが、お伝えしきれない細かなところもありますのでご了承下さいm(_ _)m
+また、説明欄には無い異常な症状、動作不良などあれば返品対応お受けいたします！
+いつでもご連絡下さいませ(^^)
+
+←その他商品はこちらへどうぞ( ˊ̱˂˃ˋ̱ )← iPhone 6 6s 7 8 X XS XR SE PLUS 11 12 13 14 15 mini PRO`;
+                    
+                    // 結果を表示
+                    listingTitle.value = title;
+                    listingDescription.value = description;
+                    
+                    // コピーボタンを表示
+                    document.getElementById('copyTitleBtn').classList.remove('hidden');
+                    document.getElementById('copyDescBtn').classList.remove('hidden');
+                });
+            }
+            
+            // コンディション説明生成関数
+            function getConditionDescription(part, condition) {
+                const descriptions = {
+                    screen: {
+                        SS: 'SS: 新品同様。傷や汚れが全くない完璧な状態。',
+                        S: 'S: ほぼ無傷。拡大しても傷はほとんど見えない。',
+                        A: 'A: 小傷はあるが、数が少なく目立たない。',
+                        B: 'B: 光反射で見える程度の薄い小さな傷が一部にあり。',
+                        C: 'C: 細かい傷が複数見られる状態。',
+                        D: 'D: 目立つ傷や汚れがある状態。'
+                    },
+                    back: {
+                        SS: 'SS: 新品同様',
+                        S: 'S: ほぼ無傷',
+                        A: 'A: 小傷あり',
+                        B: 'B: 小さな傷あり',
+                        C: 'C: 傷多い',
+                        D: 'D: 大きな傷あり'
+                    },
+                    side: {
+                        SS: 'SS: 新品同様',
+                        S: 'S: ほぼ無傷',
+                        A: 'A: 小傷あり',
+                        B: 'B: 小さな傷あり',
+                        C: 'C: 傷多い',
+                        D: 'D: 大きな傷あり'
+                    },
+                    top: {
+                        SS: 'SS: 新品同様',
+                        S: 'S: ほぼ無傷',
+                        A: 'A: 小傷あり',
+                        B: 'B: 小さな傷あり',
+                        C: 'C: 傷多い',
+                        D: 'D: 大きな傷あり'
+                    },
+                    bottom: {
+                        SS: 'SS: 新品同様',
+                        S: 'S: ほぼ無傷',
+                        A: 'A: 小傷あり',
+                        B: 'B: 細かい傷あり',
+                        C: 'C: 傷多い',
+                        D: 'D: 大きな傷あり'
+                    },
+                    overall: {
+                        SS: 'SS: 新品同様',
+                        S: 'S: ほぼ無傷',
+                        A: 'A: 小傷あり',
+                        B: 'B: 美品',
+                        C: 'C: 傷多い',
+                        D: 'D: 大きな傷あり'
+                    }
+                };
+                
+                return descriptions[part][condition] || '不明な状態';
+            }
+        });
+    </script>
+</body>
+</html>
